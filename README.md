@@ -2,7 +2,9 @@
 
 Minimal public deployment metadata for a synthetic infrastructure setup check. The image is Tinfoil's prebuilt hello-world example, pinned by digest. No application code, private prompts, credentials or case materials belong here.
 
-This checks release and container onboarding only. It does not implement the Docket Entry Runner or demonstrate the project's M0 confidentiality proof. The application repository remains private.
+The `v0.0.1` release and both release workflows completed successfully. A synthetic deployment passed the official Tinfoil SDK attestation check and returned HTTP 200 with the expected greeting. The container was last confirmed stopped, with its configuration retained. This checks release, deployment and attested connectivity only; it does not implement the Docket Entry Runner or demonstrate the project's M0 confidentiality proof.
+
+This public repository remains deployment configuration for the synthetic setup check. The Docket Entry application repository remains private. No merge, rename or deletion is planned.
 
 ## Contents and provenance
 
@@ -14,9 +16,7 @@ Both workflows are unchanged from [Tinfoil's official template at commit 0eddc32
 
 ## Release and deployment
 
-After this config-only repository is approved for public publication, run the official **Tinfoil Release** workflow with version `v0.0.1`. Let both workflows finish. A bare Git tag or manually created empty release is insufficient.
-
-Connect the Tinfoil GitHub App to this configuration repository and select its completed release in the container picker. Publishing a release does not deploy a running container. Review the Tinfoil plan and running cost before starting one.
+The official **Tinfoil Release** workflow created version `v0.0.1`; the release and publication workflows both succeeded. The release was recognized and deployed for the synthetic check described above.
 
 Keep real customer inputs, model credentials and proprietary prompts out of this example. Replace the example image with the reviewed Runner when it is ready; do not treat this greeting as completion of M0.
 
