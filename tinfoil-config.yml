@@ -11,7 +11,7 @@ networks:
 
 containers:
   - name: runner
-    image: ghcr.io/ballentine-dev/docket-entry-m0@sha256:3fcdc45f17735ae0066ddf4653ad0212459c2c98ef6bf525c0662e6b0f3ddf37
+    image: ghcr.io/ballentine-dev/docket-entry-m0@sha256:abbd448ef1ebc80b07d064955189348c48ce7620a0965ff73ddf9b7fce14b706
     networks:
       - provider
     env:
