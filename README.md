@@ -5,8 +5,7 @@ This public repository contains configuration and documentation only. It does no
 ## Status and pinned artifacts
 
 - **M0 is accepted.**
-- **M1 v0.1.0 is prepared but not published.** Live M1 deployment and validation are pending; this configuration is not evidence of a successful deployment.
-- The runner image is pinned to `ghcr.io/ballentine-dev/docket-entry-m0@sha256:42cf026ff772687a1d044d60aa9547b3df8ff2c288eed4fb38bf5f96f6471e26`, built from app commit `1fc534e756719c7064ed7ff8acb53457d8ae1d2d`. App commit `c9e1608` changes tooling only; this config retains the supplied runtime image.
+- **M1 v0.1.0 is published and was deployed for a bounded synthetic test.** Release verification, attested health and role/release rejection checks passed. Storage returned an error, so encrypted persistence and restart validation remain incomplete. The test instance is stopped; no M1 acceptance is claimed.
 - The buckets sidecar is pinned to `ghcr.io/tinfoilsh/tinfoil-buckets-sidecar@sha256:03d43dd687a5ed352f3d4956db6af706ec9dee8ca2c0fbce651ee59317b2ede5`.
 
 The Runner image is pinned to `sha256:87f6ec5226ec26febb7cc1395fca9dc7e3c6837f4ccb1494420a71dc9d1e57be`, built from reviewed application commit `fa3910c74155e00d6a6815b4a4c120c11b4ead17` ([build evidence](https://github.com/Ballentine-dev/docket-entry/actions/runs/36243887475)). The runtime content is identical to merged application commit `914bd40`. All 226 offline tests and the image build passed. This includes the reviewed interrupted-storage-response correction. The sidecar is pinned to the official v0.0.6 digest in the configuration.
@@ -15,7 +14,7 @@ The Runner image is pinned to `sha256:87f6ec5226ec26febb7cc1395fca9dc7e3c6837f4c
 
 The configured `EMAIL` release is for synthetic evaluation only, not production or real customer data. The model budget is $0.05 per job, with a per-increment ceiling of <=$1. These are stated budget limits/targets, not measured spend or proof of runtime enforcement.
 
-Intended reboot behavior is that access to existing encrypted objects remains possible with the same customer-held key, without repeating OAuth. This behavior is pending live verification; M1 has not yet been deployed and validated. In multitenant mode, the customer supplies the key with requests. No operator encryption key or plaintext AWS credentials are included in this repository.
+Intended reboot behavior is that access to existing encrypted objects remains possible with the same customer-held key, without repeating OAuth. This behavior remains pending live verification; the first deployment did not complete storage validation. In multitenant mode, the customer supplies the key with requests. No operator encryption key or plaintext AWS credentials are included in this repository.
 
 M2 in-flight recovery is not claimed. The sidecar keeps multipart session state locally, so an interrupted multipart session does not survive a sidecar restart.
 
@@ -27,4 +26,4 @@ Only the buckets container references the Tinfoil secrets `AWS_ACCESS_KEY_ID` an
 
 The sidecar is configured for buffered GETs with `BUFFER_SIZE=1048576` (1 MiB) and `DANGEROUS_DELAYED_AUTH=false`. GETs larger than the buffer are rejected rather than streamed. The sidecar also requires path-style S3 requests, does not support ranged GETs, and requires sequential multipart uploads with non-final parts aligned to 16 bytes.
 
-No host port mappings or writable mounts are declared. The config relies on the platform's default read-only filesystem; compatibility with these pinned images has not been validated.
+No host port mappings or writable mounts are declared. The config relies on the platform's default read-only filesystem; both pinned containers reached Running without restarts or OOM in the first test, but storage functionality remains unverified.
