@@ -14,7 +14,7 @@ networks:
 
 containers:
   - name: runner
-    image: "ghcr.io/ballentine-dev/docket-entry-m0@sha256:87f6ec5226ec26febb7cc1395fca9dc7e3c6837f4ccb1494420a71dc9d1e57be"
+    image: "ghcr.io/ballentine-dev/docket-entry-m0@sha256:1e444a3498c6a9353a67eea61d04530248f9851e1cc4f54ac05afefa8d7ecc72"
     env:
       - PORT: "8080"
       - DOCKET_RUNNER_MODE: "m1"
