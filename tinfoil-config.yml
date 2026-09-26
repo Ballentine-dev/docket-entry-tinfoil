@@ -7,8 +7,7 @@ networks:
     egress: allowlist
     allow: [openrouter.ai]
   storage:
-    egress: allowlist
-    allow: [s3.us-east-2.amazonaws.com, docket-entry-m1-212346651704-us-east-2.s3.us-east-2.amazonaws.com, s3-r-w.us-east-2.amazonaws.com]
+    egress: open
   internal:
     egress: closed
 
