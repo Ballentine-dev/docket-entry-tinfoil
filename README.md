@@ -7,9 +7,9 @@ This public repository contains configuration and documentation only. It does no
 - **M0 is accepted.**
 - **M1 remains incomplete; no M1 acceptance is claimed.** M1 v0.1.0 was published and deployed for a bounded synthetic test. Release verification, attested health, and role/release rejection checks passed. Storage returned an error, so encrypted persistence and restart validation remain incomplete.
 - **M1 v0.1.1 is published and signed.** Its single measured live tracer invocation is recorded below. It did not establish storage success, and all four instances were stopped.
-- **v0.1.2 is a config/docs-only draft, not published or live-tested.** It retains the existing images, networks, secrets, and other runtime configuration; only two entries are added to the buckets environment. No v0.1.2 pass is claimed.
+- **v0.1.2 is published and signed but remains undeployed.** The diagnostic specification changed after tagging. The combined DNS/config diagnostic will use v0.1.3; no live pass is claimed.
 
-The v0.1.1 Runner image is pinned to `ghcr.io/ballentine-dev/docket-entry-m0@sha256:1e444a3498c6a9353a67eea61d04530248f9851e1cc4f54ac05afefa8d7ecc72`, built from reviewed application commit `e8bcce3b84438b3dd00d8506d2e2ed42c0604537` ([build evidence](https://github.com/Ballentine-dev/docket-entry/actions/runs/36247915842)), runtime-identical to merged commit `72a5188`. The image build and all 250 offline tests passed for that Runner build. The proposed v0.1.2 keeps this exact Runner image; no application-code or image change is included.
+The next v0.1.3 diagnostic pins Runner `ghcr.io/ballentine-dev/docket-entry-m0@sha256:684d1d3fe41ad51caee195467299650a301aa7f12bbec9fadf1bfda0aa605731`, built from reviewed application commit `6cc21ec7558b25418cfb77e651bacdaf8f3a9f43` ([build evidence](https://github.com/Ballentine-dev/docket-entry/actions/runs/36250612011)), runtime-identical to merged `4714133`. All 267 offline tests, required PR checks and image build passed. It adds bounded DNS observations for the two fixed S3 hostnames. The report identifies the Runner network namespace and contains only linked IPv4/CNAME records and TTLs; it does not establish the sidecar or enforcer's DNS answers. DNS failures do not change HTTP-derived storage health. A new verified measurement and actual live probe remain required.
 
 The buckets sidecar is pinned to `ghcr.io/tinfoilsh/tinfoil-buckets-sidecar@sha256:03d43dd687a5ed352f3d4956db6af706ec9dee8ca2c0fbce651ee59317b2ede5`.
 
@@ -26,11 +26,11 @@ One live invocation in v0.1.1 reported:
 
 No OAuth flow, model invocation, or persistent write occurred. No 404 was returned in this invocation. A 404 in a later probe would support the mitigation hypothesis; a fast 500 would suggest credential-delivery or client-initialization trouble; the observed slow S3-leg 500 leaves egress or reachability suspect. These are diagnostic observations, not conclusive proof of a specific root cause.
 
-The `AWS_PROFILE` setting below is a temporary credential-delivery tracer and must be removed in the first post-diagnosis release. The proposed v0.1.2 leaves the Runner image and storage probe unchanged.
+The `AWS_PROFILE` setting below is a temporary credential-delivery tracer and must be removed in the first post-diagnosis release. The v0.1.3 candidate adds the bounded DNS report while retaining the existing HTTP checks.
 
-## Proposed buckets diagnostic settings
+## Buckets diagnostic settings
 
-The unpublished v0.1.2 draft adds exactly these two environment settings to `buckets`:
+The published, undeployed v0.1.2 introduced these two buckets settings; the v0.1.3 candidate retains them:
 
 - `JAVA_TOOL_OPTIONS=-Djava.net.preferIPv4Stack=true` asks Java to prefer the IPv4 stack; it is a diagnostic setting, not a demonstrated fix.
 - `AWS_PROFILE=cred-delivery-probe` selects a profile-provider path when the static credential pair is unavailable.
