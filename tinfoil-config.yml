@@ -27,6 +27,8 @@ containers:
       - MULTITENANT: "true"
       - DANGEROUS_DELAYED_AUTH: "false"
       - AWS_REGION: "us-east-2"
+      - JAVA_TOOL_OPTIONS: "-Djava.net.preferIPv4Stack=true"
+      - AWS_PROFILE: "cred-delivery-probe"
       - PORT: "9000"
       - BUFFER_SIZE: "1048576"
     secrets:
