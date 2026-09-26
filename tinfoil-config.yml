@@ -1,25 +1,42 @@
-# Synthetic execution proof; no private instructions, credentials or customer data.
-cvm-version: 0.14.7
+cvm-version: "0.14.7"
 cpus: 2
 memory: 8192
 
 networks:
   provider:
     egress: allowlist
-    allow:
-      - openrouter.ai
+    allow: [openrouter.ai]
+  storage:
+    egress: allowlist
+    allow: [s3.us-east-2.amazonaws.com, docket-entry-m1-212346651704-us-east-2.s3.us-east-2.amazonaws.com]
+  internal:
+    egress: closed
 
 containers:
   - name: runner
-    image: ghcr.io/ballentine-dev/docket-entry-m0@sha256:abbd448ef1ebc80b07d064955189348c48ce7620a0965ff73ddf9b7fce14b706
-    networks:
-      - provider
+    image: "ghcr.io/ballentine-dev/docket-entry-m0@sha256:87f6ec5226ec26febb7cc1395fca9dc7e3c6837f4ccb1494420a71dc9d1e57be"
     env:
       - PORT: "8080"
+      - DOCKET_RUNNER_MODE: "m1"
+      - DOCKET_M1_CONFIG: '{"customer_tokens":{"-G3jj2h2OXQgYehuW-CcJh-UTQ5JKIxj":"b2b26b25003cc3e334de582f07bc147962e05492469a0202f3c04f8738da420c","KTHWPs5JI1FQLb3_7uhRsHFjcezim_ne":"99220cd59465b3ee0ed70188ec9c8cad71dec4ee4764827958dc74038cc56a33"},"issuer_token_sha256":"122f1d62aa203d0d78398c43fc131948c8ce8d65292ae066c45d02d2406f0116","models":{"m1-model-v1":{"max_tokens":128,"model":"meta-llama/llama-3.1-8b-instruct"}},"releases":{"EMAIL":{"brain_version":"m1-brain-v1","formatter_version":"m1-formatter-v1","model_config_version":"m1-model-v1","recipe_version":"m1-recipe-v1","release_id":"m1-v0.1.0","specialization_version":"m1-specialization-v1","tools_version":"m1-tools-v1"}},"storage_bucket":"docket-entry-m1-212346651704-us-east-2","version":1,"workload_id":"m1-v0.1.0"}'
+    networks: [provider, internal]
+
+  - name: buckets
+    image: "ghcr.io/tinfoilsh/tinfoil-buckets-sidecar@sha256:03d43dd687a5ed352f3d4956db6af706ec9dee8ca2c0fbce651ee59317b2ede5"
+    env:
+      - MULTITENANT: "true"
+      - DANGEROUS_DELAYED_AUTH: "false"
+      - AWS_REGION: "us-east-2"
+      - PORT: "9000"
+      - BUFFER_SIZE: "1048576"
+    secrets:
+      - AWS_ACCESS_KEY_ID
+      - AWS_SECRET_ACCESS_KEY
+    networks: [storage, internal]
 
 shim:
+  upstream-container: runner
   upstream-port: 8080
   paths:
     - /health
-    - /jobs
-    - /jobs/*
+    - /v1/*
