@@ -1,31 +1,30 @@
-# Docket Entry Tinfoil configuration
+# Docket Entry M1 Tinfoil configuration
 
-Public deployment metadata for the synthetic M0 Runner. Application source remains in the private Docket Entry repository. No private prompts, credentials or case materials belong here.
+This public repository contains configuration and documentation only. It does not change runtime or product code, the source repository, workflows, or API boundaries.
 
-The configuration replaces the original hello-world image with the reviewed Runner image, pinned by digest. It exposes only health and job routes, uses 2 CPUs and 8 GB memory, and permits outbound requests only to `openrouter.ai`. No secrets or persistent volumes are configured.
+## Status and pinned artifacts
 
-## Prepared v0.0.3 candidate
+- **M0 is accepted.**
+- **M1 v0.1.0 is prepared but not published.** Live M1 deployment and validation are pending; this configuration is not evidence of a successful deployment.
+- The runner image is pinned to `ghcr.io/ballentine-dev/docket-entry-m0@sha256:42cf026ff772687a1d044d60aa9547b3df8ff2c288eed4fb38bf5f96f6471e26`, built from app commit `1fc534e756719c7064ed7ff8acb53457d8ae1d2d`. App commit `c9e1608` changes tooling only; this config retains the supplied runtime image.
+- The buckets sidecar is pinned to `ghcr.io/tinfoilsh/tinfoil-buckets-sidecar@sha256:03d43dd687a5ed352f3d4956db6af706ec9dee8ca2c0fbce651ee59317b2ede5`.
 
-The current configuration pins the synthetic paste-authorization Runner built from reviewed application commit `3c3d80c0477c17f1ef542612c6381b77167ee98b`. The [image workflow](https://github.com/Ballentine-dev/docket-entry/actions/runs/36149249424) passed all 72 offline tests and published `sha256:3fcdc45f17735ae0066ddf4653ad0212459c2c98ef6bf525c0662e6b0f3ddf37`. Anonymous registry access and the manifest digest were independently verified.
+The Runner image is pinned to `sha256:87f6ec5226ec26febb7cc1395fca9dc7e3c6837f4ccb1494420a71dc9d1e57be`, built from reviewed application commit `fa3910c74155e00d6a6815b4a4c120c11b4ead17` ([build evidence](https://github.com/Ballentine-dev/docket-entry/actions/runs/36243887475)). The runtime content is identical to merged application commit `914bd40`. All 226 offline tests and the image build passed. This includes the reviewed interrupted-storage-response correction. The sidecar is pinned to the official v0.0.6 digest in the configuration.
 
-This candidate adds per-job PKCE begin/code exchange with the verifier and resulting key kept in protected execution. The test client supports browser consent followed by a code entered at its dedicated hidden terminal prompt. Offline checks cover provider errors, session ownership/lifecycle, concurrent exchange, secret exclusion and the actual client/Runner contract with simulated attestation and a fake provider.
+## Scope and behavior
 
-**Release publication and deployment are pending.** The founder directed pausing before the live proof. No v0.0.3 tag, new measurement pin, deployment or browser-consent result is claimed. The v0.0.2 pin must not be used for this changed image. On resumption, publish the reviewed candidate using the existing Tinfoil release workflow, derive and approve its measurement, deploy with debug disabled, run the bounded proof with founder browser consent, and stop the instance afterward. Full M0 remains pending.
+The configured `EMAIL` release is for synthetic evaluation only, not production or real customer data. The model budget is $0.05 per job, with a per-increment ceiling of <=$1. These are stated budget limits/targets, not measured spend or proof of runtime enforcement.
 
-## Evidence and limits
+Intended reboot behavior is that access to existing encrypted objects remains possible with the same customer-held key, without repeating OAuth. This behavior is pending live verification; M1 has not yet been deployed and validated. In multitenant mode, the customer supplies the key with requests. No operator encryption key or plaintext AWS credentials are included in this repository.
 
-Release `v0.0.1` previously passed the official SDK attestation and greeting check and was stopped afterward. That was infrastructure evidence only.
+M2 in-flight recovery is not claimed. The sidecar keeps multipart session state locally, so an interrupted multipart session does not survive a sidecar restart.
 
-This Runner image was built from application commit `f292ceee0b81e57ac5ccda5cd5f978536969a236` after 30 offline tests, review, refactoring and a successful CI container build. Only the synthetic image package was made public with founder approval; the application repository remains private.
+## Topology and storage notes
 
-[Release v0.0.2](https://github.com/Ballentine-dev/docket-entry-tinfoil/releases/tag/v0.0.2) passed signature and configuration verification and deployed with debug disabled. On September 25, 2026, the official SDK's attested TLS transport verified both input channels against the exact approved release. Four real model calls completed and returned the expected synthetic result, 23. Provider billing metadata reconciled all four calls at $0.0001623 total. A deliberately wrong release measurement was rejected before credential read. The test instance was confirmed stopped afterward; both instances are stopped. The billing dashboard reported $0.02 container spend for the current period, not a final per-run invoice.
+The shim forwards only `/health` and `/v1/*` to `runner:8080`. The buckets service listens on port 9000 on the shared internal network; it is not exposed through the shim. Runner egress is allowlisted to `openrouter.ai`; buckets egress is allowlisted to the two S3 hostnames in the config. Each container has one egress-enabled network plus the egress-closed internal network.
 
-The synthetic client supplies customer and instruction inputs separately over verified channels. The prototype uses in-memory jobs and manual protected test-key intake; production identity, browser OAuth and persistence are not established. Full M0 remains pending browser authorization and the remaining real authorization/failure/leak checks. Detailed sanitized receipts and handoff are retained in the private application repository.
+Only the buckets container references the Tinfoil secrets `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`. `MULTITENANT=true` means there is no operator `ENCRYPTION_KEY`; the sidecar expects tenant and customer-held encryption-key headers per request. The sidecar does not authenticate requests itself and trusts those headers, so keep it internal and do not expose it directly.
 
-## Release and deployment
+The sidecar is configured for buffered GETs with `BUFFER_SIZE=1048576` (1 MiB) and `DANGEROUS_DELAYED_AUTH=false`. GETs larger than the buffer are rejected rather than streamed. The sidecar also requires path-style S3 requests, does not support ranged GETs, and requires sequential multipart uploads with non-final parts aligned to 16 bytes.
 
-The two release workflows retain Tinfoil's official pinned actions from [template commit 0eddc320](https://github.com/tinfoilsh/tinfoil-containers-template/tree/0eddc320b8f328d7a3c057152596934444ac2d75). **Tinfoil Release** creates a version tag and dispatches measurement, signing and publication. Deploy the intended tag with debug disabled, and require the exact approved code measurement in the test client.
-
-The image must be accessible to Tinfoil before deployment. Its digest identifies the reviewed code; it does not grant registry access. Keep this synthetic package separate from any future private production image.
-
-References: [configuration](https://docs.tinfoil.sh/containers/configuration), [networking](https://docs.tinfoil.sh/containers/config-networking), [private images](https://docs.tinfoil.sh/containers/private-images).
+No host port mappings or writable mounts are declared. The config relies on the platform's default read-only filesystem; compatibility with these pinned images has not been validated.
