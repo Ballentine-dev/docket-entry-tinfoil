@@ -1,3 +1,13 @@
+# Current M2 measured release candidate — v0.2.0
+
+M1 Path A was accepted with temporary open storage egress and the approved full-reboot customer-key restoration pause. The material below is historical M1 evidence.
+
+This candidate switches to the reviewed M2 recovery runtime and its public configuration, and adds `/v2/*` to the existing health/connection routes. The private application passed 860 tests and required PR CI before merge. The image digest is updated only from the verified build of that merge. The CVM version, resources, sidecar image/settings, OpenRouter-only provider egress, open storage workaround and closed internal network remain unchanged. No raw credentials or customer material are published.
+
+The synthetic proof uses two actual Shopify dev-store test-card orders and their actual signed, filtered webhooks. One entitlement must survive Runner kill/restart and finish on the same job; a separate entitlement must exhaust 14 releases without confirmation and raise the refund flag. Synthetic research credential custody is checked in the same increment. Live proof and founder M2 acceptance remain pending. Deploy only one instance, verify the signed exact-tag measurement, and stop the instance after the bounded proof. Path B and research fulfillment remain separate.
+
+---
+
 # Docket Entry M1 Tinfoil configuration
 
 This public repository contains configuration and documentation only. It does not change runtime or product code, the source repository, workflows, or API boundaries.

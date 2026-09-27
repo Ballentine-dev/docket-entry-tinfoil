@@ -13,11 +13,11 @@ networks:
 
 containers:
   - name: runner
-    image: "ghcr.io/ballentine-dev/docket-entry-m0@sha256:684d1d3fe41ad51caee195467299650a301aa7f12bbec9fadf1bfda0aa605731"
+    image: "ghcr.io/ballentine-dev/docket-entry-m0@sha256:5e5031ef8c14844563ec1268e6488b1418642695a7e310dd20e4b0707533949f"
     env:
       - PORT: "8080"
-      - DOCKET_RUNNER_MODE: "m1"
-      - DOCKET_M1_CONFIG: '{"customer_tokens":{"-G3jj2h2OXQgYehuW-CcJh-UTQ5JKIxj":"b2b26b25003cc3e334de582f07bc147962e05492469a0202f3c04f8738da420c","KTHWPs5JI1FQLb3_7uhRsHFjcezim_ne":"99220cd59465b3ee0ed70188ec9c8cad71dec4ee4764827958dc74038cc56a33"},"issuer_token_sha256":"122f1d62aa203d0d78398c43fc131948c8ce8d65292ae066c45d02d2406f0116","models":{"m1-model-v1":{"max_tokens":128,"model":"meta-llama/llama-3.1-8b-instruct"}},"releases":{"EMAIL":{"brain_version":"m1-brain-v1","formatter_version":"m1-formatter-v1","model_config_version":"m1-model-v1","recipe_version":"m1-recipe-v1","release_id":"m1-v0.1.0","specialization_version":"m1-specialization-v1","tools_version":"m1-tools-v1"}},"storage_bucket":"docket-entry-m1-212346651704-us-east-2","version":1,"workload_id":"m1-v0.1.0"}'
+      - DOCKET_RUNNER_MODE: "m2"
+      - DOCKET_M2_CONFIG: '{"customer_tokens":{"TS2nBBWzM0VJGjOXkcjJtt-YHo-dtZgd":"1a1b6c46b2789375a1149abd79fddc92695f7ca7a573a7b3d10ac6477320ee5c","miWrC05o2zWNG93e6g6y1uUDW7QCLWuI":"e1b98c0d7941fef45e8435673f09bbb044d655e605948b7ccffd3f1ab25c87db"},"issuer_token_sha256":"539ab99e0ae5088ca817bd0ea3543787e65302646e3d5acc6461f5bd687ad20e","models":{"m2-model-v1":{"max_tokens":128,"model":"meta-llama/llama-3.1-8b-instruct"}},"releases":{"EMAIL":{"brain_version":"m2-brain-v1","formatter_version":"m2-formatter-v1","model_config_version":"m2-model-v1","recipe_version":"m2-recipe-v1","release_id":"m2-v0.2.0","specialization_version":"m2-specialization-v1","tools_version":"m2-tools-v1"}},"storage_bucket":"docket-entry-m1-212346651704-us-east-2","version":2,"workload_id":"m2-v0.2.0"}'
     networks: [provider, internal]
 
   - name: buckets
@@ -40,3 +40,4 @@ shim:
   paths:
     - /health
     - /v1/*
+    - /v2/*
