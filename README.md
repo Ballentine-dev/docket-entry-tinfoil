@@ -41,7 +41,7 @@ The buckets sidecar digest is the one pinned in the current configuration above;
 
 ### v0.1.3 issuer-only probe and DNS observations
 
-The pinned Runner includes an issuer-only, read-only storage probe for a reserved synthetic path. It reports fixed outcomes, HTTP status, and timing; uses a separate in-memory probe key; and returns no response bodies or headers. It also emits bounded DNS observations for the two configured S3 hostnames. The DNS results below are from the Runner network namespace; they do not establish the sidecar's or egress enforcer's DNS answers. DNS failures do not change HTTP-derived storage health.
+The pinned Runner includes an issuer-only, read-only storage probe for a reserved synthetic path. It reports fixed outcomes, HTTP status, and timing; uses a separate in-memory probe key; and returns no response bodies or headers. It also emits bounded DNS observations for the two S3 hostnames configured at v0.1.3. The DNS results below are from the Runner network namespace; they do not establish the sidecar's or egress enforcer's DNS answers. DNS failures do not change HTTP-derived storage health.
 
 One real issuer-only invocation in v0.1.3 reported:
 
@@ -70,7 +70,7 @@ The M2 recovery runtime is configured from v0.2.0 (`DOCKET_RUNNER_MODE` is `m2`)
 
 ### Topology and storage notes
 
-Through v0.1.5 the shim forwarded only `/health` and `/v1/*` to `runner:8080`, and buckets egress was allowlisted to the two S3 hostnames in the config.
+From v0.1.0 through v0.1.6 the shim forwarded only `/health` and `/v1/*` to `runner:8080`. From v0.1.0 through v0.1.5 buckets egress was allowlisted to S3 hostnames: two through v0.1.4, three at v0.1.5. Storage egress has been open since v0.1.6.
 
 `MULTITENANT=true` means there is no operator `ENCRYPTION_KEY`; the sidecar expects tenant and customer-held encryption-key headers per request. The sidecar does not authenticate requests itself and trusts those headers, so keep it internal and do not expose it directly.
 
