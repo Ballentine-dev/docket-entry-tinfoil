@@ -5,7 +5,7 @@ memory: 8192
 networks:
   provider:
     egress: allowlist
-    allow: [openrouter.ai]
+    allow: [openrouter.ai, docketentry.com, www.courtlistener.com]
   storage:
     egress: open
   internal:
@@ -17,7 +17,10 @@ containers:
     env:
       - PORT: "8080"
       - DOCKET_RUNNER_MODE: "m2"
-      - DOCKET_M2_CONFIG: '{"customer_tokens":{"hsHgGD87qXCcZzFsj-D-hN56TsKheAne":"d740fd2fe515a4eb9aadaaeccc0c3413b0020e1c7aa0be6b38ae54312936cc88","zEIyOkZWadExsnRgNOeABOnti-4r86OY":"1d9885c074395de925c60b5a6a3ab80e1bbd89567c25a829b9d6a2c172df5acc"},"environment":"development","issuer_token_sha256":"e953e4443c67f190383d2ff5cae2c9d33014f1d84090ad41afb884274a05c443","models":{"m2-model-v3":{"max_tokens":4096,"model":"meta-llama/llama-3.1-8b-instruct"},"m2-model-v3-tiers":{"tiers":{"ADVANCED":{"development":{"draft":{"max_tokens":2048,"model":"mistralai/mistral-nemo"},"final":{"max_tokens":2048,"model":"mistralai/mistral-nemo"},"outline":{"max_tokens":2048,"model":"meta-llama/llama-3.1-8b-instruct"},"review":{"max_tokens":2048,"model":"meta-llama/llama-3.1-8b-instruct"}}},"MAX":{"development":{"draft":{"max_tokens":4096,"model":"mistralai/mistral-nemo"},"final":{"max_tokens":4096,"model":"mistralai/mistral-nemo"},"outline":{"max_tokens":4096,"model":"meta-llama/llama-3.1-8b-instruct"},"review":{"max_tokens":4096,"model":"meta-llama/llama-3.1-8b-instruct"}}},"STANDARD":{"development":{"draft":{"max_tokens":2048,"model":"meta-llama/llama-3.1-8b-instruct"},"final":{"max_tokens":2048,"model":"meta-llama/llama-3.1-8b-instruct"},"outline":{"max_tokens":2048,"model":"meta-llama/llama-3.1-8b-instruct"},"review":{"max_tokens":2048,"model":"meta-llama/llama-3.1-8b-instruct"}}}}}},"releases":{"EMAIL":{"brain_version":"m2-brain-v1","formatter_version":"m2-formatter-v1","model_config_version":"m2-model-v3","recipe_version":"m2-recipe-v1","release_id":"m2-v0.3.1","specialization_version":"m2-specialization-v1","tools_version":"m2-tools-v1"},"MAJOR_ADVANCED":{"brain_version":"m2-brain-v1","formatter_version":"m2-formatter-v1","model_config_version":"m2-model-v3-tiers","recipe_version":"m2-recipe-v1","release_id":"m2-v0.3.1","specialization_version":"m2-specialization-v1","tools_version":"m2-tools-v1"},"MAJOR_MAX":{"brain_version":"m2-brain-v1","extension_version":"m2-extension-v1","formatter_version":"m2-formatter-v1","model_config_version":"m2-model-v3-tiers","recipe_version":"m2-recipe-v1","release_id":"m2-v0.3.1","specialization_version":"m2-specialization-v1","tools_version":"m2-tools-v1"},"MAJOR_STANDARD":{"brain_version":"m2-brain-v1","formatter_version":"m2-formatter-v1","model_config_version":"m2-model-v3-tiers","recipe_version":"m2-recipe-v1","release_id":"m2-v0.3.1","specialization_version":"m2-specialization-v1","tools_version":"m2-tools-v1"}},"storage_bucket":"docket-entry-m1-212346651704-us-east-2","version":2,"workload_id":"m2-v0.3.1"}'
+      - DOCKET_M2_CONFIG: '{"environment":"development","feed_url":"https://docketentry.com/api/box/sync","issuer_token_sha256":"e953e4443c67f190383d2ff5cae2c9d33014f1d84090ad41afb884274a05c443","releases":{"EMAIL":{"brain_version":"m2-brain-v1","formatter_version":"m2-formatter-v1","model_config_version":"cfg-1","recipe_version":"m2-recipe-v1","release_id":"m2-v0.4.0","specialization_version":"m2-specialization-v1","tools_version":"m2-tools-v1"},"MAJOR_ADVANCED":{"brain_version":"m2-brain-v1","formatter_version":"m2-formatter-v1","model_config_version":"cfg-2","recipe_version":"m2-recipe-v1","release_id":"m2-v0.4.0","specialization_version":"m2-specialization-v1","tools_version":"m2-tools-v1"},"MAJOR_MAX":{"brain_version":"m2-brain-v1","extension_version":"m2-extension-v1","formatter_version":"m2-formatter-v1","model_config_version":"cfg-2","recipe_version":"m2-recipe-v1","release_id":"m2-v0.4.0","specialization_version":"m2-specialization-v1","tools_version":"m2-tools-v1"},"MAJOR_STANDARD":{"brain_version":"m2-brain-v1","formatter_version":"m2-formatter-v1","model_config_version":"cfg-2","recipe_version":"m2-recipe-v1","release_id":"m2-v0.4.0","specialization_version":"m2-specialization-v1","tools_version":"m2-tools-v1"}},"storage_bucket":"docket-entry-m1-212346651704-us-east-2","version":3,"workload_id":"m2-v0.4.0"}'
+    secrets:
+      - FEED_SECRET
+      - PACKAGE_KEY
     networks: [provider, internal]
 
   - name: buckets
@@ -28,7 +31,7 @@ containers:
       - AWS_REGION: "us-east-2"
       - JAVA_TOOL_OPTIONS: "-Djava.net.preferIPv4Stack=true"
       - PORT: "9000"
-      - BUFFER_SIZE: "1048576"
+      - BUFFER_SIZE: "16777216"
     secrets:
       - AWS_ACCESS_KEY_ID
       - AWS_SECRET_ACCESS_KEY
